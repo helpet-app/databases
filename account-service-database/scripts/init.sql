@@ -57,4 +57,4 @@ EXECUTE PROCEDURE block_account();
 
 ALTER SYSTEM SET wal_level = logical;
 
-CREATE PUBLICATION accounts_publication FOR TABLE accounts (id, username, NAME, email, is_email_verified, is_enabled, is_blocked), account_roles WITH (PUBLISH = 'INSERT,UPDATE,DELETE,TRUNCATE');
+CREATE PUBLICATION accounts_publication FOR TABLE accounts (id, username, name, email, is_email_verified, is_enabled, is_blocked), account_roles WITH (PUBLISH = 'INSERT,UPDATE,DELETE,TRUNCATE');
