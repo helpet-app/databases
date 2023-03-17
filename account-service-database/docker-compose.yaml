@@ -2,7 +2,7 @@ version: '3'
 
 services:
   account-service-database:
-    image: ghcr.io/helpet-inc/account-service-database:0.0.1-snapshot
+    image: ghcr.io/helpet-app/account-service-database:0.0.1-snapshot
     container_name: account-service-database
     ports:
       - '5432:5432'
