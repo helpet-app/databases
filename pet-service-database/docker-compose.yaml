@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  pet-service-database:
+    image: ghcr.io/helpet-app/pet-service-database:0.0.1-snapshot
+    container_name: pet-service-database
+    ports:
+      - '5434:5432'
+    env_file:
+      - .pet-service-database.env
+    volumes:
+      - pet-service-database-data:/var/lib/postgresql/data/
+
+volumes:
+  pet-service-database-data:
+    driver: local
