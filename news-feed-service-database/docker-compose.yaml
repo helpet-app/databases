@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  news-feed-service-database:
+    image: ghcr.io/helpet-app/news-feed-service-database:0.0.1-snapshot
+    container_name: news-feed-service-database
+    ports:
+      - '5436:5432'
+    env_file:
+      - .news-feed-service-database.env
+    volumes:
+      - news-feed-service-database-data:/var/lib/postgresql/data/
+
+volumes:
+  news-feed-service-database-data:
+    driver: local
