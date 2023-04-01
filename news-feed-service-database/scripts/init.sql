@@ -48,4 +48,26 @@ CREATE TABLE account_favorites (
     PRIMARY KEY (account_id, article_id)
 );
 
+CREATE OR REPLACE FUNCTION find_all_articles_by_filter(
+    tag_ids UUID[]
+)
+    RETURNS SETOF UUID
+AS
+$$
+BEGIN
+    IF tag_ids IS NULL OR CARDINALITY(tag_ids) = 0 THEN
+        RETURN QUERY
+            SELECT ac.id
+            FROM article_cards AS ac;
+        RETURN;
+    END IF;
+
+    RETURN QUERY
+        SELECT at.article_id
+        FROM article_tags AS at
+        WHERE at.tag_id = ANY (tag_ids)
+        GROUP BY at.article_id;
+END;
+$$ LANGUAGE PLPGSQL;
+
 -- CREATE SUBSCRIPTION accounts_subscription_for_news_feed_service CONNECTION '...' PUBLICATION accounts_publication;
