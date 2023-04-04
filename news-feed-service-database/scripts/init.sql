@@ -65,10 +65,11 @@ BEGIN
     END IF;
 
     RETURN QUERY
-        SELECT DISTINCT ac.id
+        SELECT ac.id
         FROM article_cards AS ac
                  INNER JOIN article_tags AS at ON ac.id = at.article_id
         WHERE at.tag_id = ANY (tag_ids)
+        GROUP BY ac.id, ac.created_at
         ORDER BY ac.created_at DESC;
 END;
 $$ LANGUAGE PLPGSQL;
@@ -91,11 +92,12 @@ BEGIN
     END IF;
 
     RETURN QUERY
-        SELECT DISTINCT ac.id
+        SELECT ac.id
         FROM article_cards AS ac
                  INNER JOIN article_tags AS at ON ac.id = at.article_id
         WHERE ac.created_by = content_manager_id
           AND at.tag_id = ANY (tag_ids)
+        GROUP BY ac.id, ac.created_at
         ORDER BY ac.created_at DESC;
 END;
 $$ LANGUAGE PLPGSQL;
