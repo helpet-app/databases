@@ -76,7 +76,7 @@ CREATE TABLE vet_schedule (
     CHECK (monday OR tuesday OR wednesday OR thursday OR friday OR saturday OR sunday),
     UNIQUE (vet_id, time_slot_id)
 );
-CREATE INDEX IF NOT EXISTS vet_schedule_vet_fkey ON vet_schedule (vet_id);
+CREATE INDEX vet_schedule_vet_fkey ON vet_schedule (vet_id);
 
 CREATE OR REPLACE FUNCTION find_all_vets_by_filter(
     tag_ids UUID[]
