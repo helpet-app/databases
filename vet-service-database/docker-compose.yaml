@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  vet-service-database:
+    image: ghcr.io/helpet-app/vet-service-database:0.0.1-snapshot
+    container_name: vet-service-database
+    ports:
+      - '5435:5432'
+    env_file:
+      - .vet-service-database.env
+    volumes:
+      - vet-service-database-data:/var/lib/postgresql/data/
+
+volumes:
+  vet-service-database-data:
+    driver: local
