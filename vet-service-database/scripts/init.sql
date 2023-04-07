@@ -23,15 +23,6 @@ CREATE TABLE vet_contacts (
 );
 CREATE INDEX vet_contacts_vet_fkey ON vet_contacts (vet_id);
 
-CREATE TABLE vet_certificates (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name        TEXT NOT NULL,
-    description TEXT,
-    file_url    TEXT NOT NULL,
-    vet_id      UUID NOT NULL REFERENCES vets (account_id)
-);
-CREATE INDEX vet_certificates_vet_fkey ON vet_certificates (vet_id);
-
 CREATE TABLE vet_tariffs (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name        TEXT NOT NULL,
