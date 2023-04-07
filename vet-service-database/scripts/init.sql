@@ -96,4 +96,16 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
+DO
+$$
+    BEGIN
+        FOR hour IN 0..23
+            LOOP
+                INSERT INTO time_slots (start_time, end_time) VALUES (MAKE_TIME(hour, 0, 0), MAKE_TIME(hour, 30, 0));
+                INSERT INTO time_slots (start_time, end_time)
+                VALUES (MAKE_TIME(hour, 30, 0), MAKE_TIME(hour + 1, 0, 0));
+            END LOOP;
+    END
+$$;
+
 -- CREATE SUBSCRIPTION accounts_subscription_for_vet_service CONNECTION '...' PUBLICATION accounts_publication;
