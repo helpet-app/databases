@@ -6,6 +6,8 @@ CREATE TABLE accounts (
 );
 CREATE UNIQUE INDEX accounts_unique_username ON accounts (UPPER(username));
 
+-- CREATE SUBSCRIPTION accounts_subscription_for_vet_service CONNECTION '...' PUBLICATION accounts_publication;
+
 CREATE TABLE vets (
     account_id UUID PRIMARY KEY REFERENCES accounts (id),
     name       TEXT NOT NULL,
@@ -107,5 +109,3 @@ $$
             END LOOP;
     END
 $$;
-
--- CREATE SUBSCRIPTION accounts_subscription_for_vet_service CONNECTION '...' PUBLICATION accounts_publication;
