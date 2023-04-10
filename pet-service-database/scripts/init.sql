@@ -6,6 +6,8 @@ CREATE TABLE accounts (
 );
 CREATE UNIQUE INDEX accounts_unique_username ON accounts (UPPER(username));
 
+-- CREATE SUBSCRIPTION accounts_subscription_for_pet_service CONNECTION '...' PUBLICATION accounts_publication;
+
 CREATE TABLE families (
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name       TEXT NOT NULL,
@@ -96,6 +98,23 @@ CREATE TABLE vaccination_history (
     pet_id           UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
 CREATE INDEX vaccination_history_pet_fkey ON vaccination_history (pet_id);
+
+CREATE OR REPLACE FUNCTION find_all_pets_related_to_user(user_id UUID)
+    RETURNS SETOF pets
+AS
+$$
+BEGIN
+    RETURN QUERY
+        SELECT p.*
+        FROM pets AS p
+                 INNER JOIN user_families AS uf ON p.family_id = uf.family_id
+        WHERE uf.user_id = $1
+        UNION
+        SELECT p.*
+        FROM pets AS p
+        WHERE p.owner_id = $1;
+END;
+$$ LANGUAGE PLPGSQL;
 
 INSERT INTO pet_categories (id, name)
 VALUES (DEFAULT, 'Собаки'),
@@ -587,22 +606,3 @@ VALUES (DEFAULT, 'Австралийская короткохвостая пас
        (DEFAULT, 'Экзотическая кошка', 2),
        (DEFAULT, 'Эльф', 2),
        (DEFAULT, 'Японский бобтейл', 2);
-
-CREATE OR REPLACE FUNCTION find_all_pets_related_to_user(user_id UUID)
-    RETURNS SETOF pets
-AS
-$$
-BEGIN
-    RETURN QUERY
-        SELECT p.*
-        FROM pets AS p
-                 INNER JOIN user_families AS uf ON p.family_id = uf.family_id
-        WHERE uf.user_id = $1
-        UNION
-        SELECT p.*
-        FROM pets AS p
-        WHERE p.owner_id = $1;
-END;
-$$ LANGUAGE PLPGSQL;
-
--- CREATE SUBSCRIPTION accounts_subscription_for_pet_service CONNECTION '...' PUBLICATION accounts_publication;
