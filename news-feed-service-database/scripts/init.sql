@@ -6,6 +6,8 @@ CREATE TABLE accounts (
 );
 CREATE UNIQUE INDEX accounts_unique_username ON accounts (UPPER(username));
 
+-- CREATE SUBSCRIPTION accounts_subscription_for_news_feed_service CONNECTION '...' PUBLICATION accounts_publication;
+
 CREATE TABLE content_managers (
     account_id UUID PRIMARY KEY REFERENCES accounts (id),
     name       TEXT NOT NULL,
@@ -116,5 +118,3 @@ BEGIN
         ORDER BY af.added_at DESC;
 END;
 $$ LANGUAGE PLPGSQL;
-
--- CREATE SUBSCRIPTION accounts_subscription_for_news_feed_service CONNECTION '...' PUBLICATION accounts_publication;
