@@ -60,7 +60,6 @@ CREATE TABLE pet_features (
     name        TEXT NOT NULL,
     description TEXT NOT NULL,
     created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by  UUID NOT NULL REFERENCES accounts (id),
     pet_id      UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
 CREATE INDEX pet_features_pet_fkey ON pet_features (pet_id);
@@ -71,7 +70,6 @@ CREATE TABLE pet_anthropometry_history (
     weight     DOUBLE PRECISION NOT NULL,
     comment    TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by UUID NOT NULL REFERENCES accounts (id),
     pet_id     UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
 CREATE INDEX pet_anthropometry_history_pet_fkey ON pet_anthropometry_history (pet_id);
@@ -83,7 +81,6 @@ CREATE TABLE pet_disease_history (
     got_sick_on  DATE NOT NULL,
     recovered_on DATE CHECK (recovered_on >= got_sick_on),
     created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by   UUID NOT NULL REFERENCES accounts (id),
     pet_id       UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
 CREATE INDEX pet_disease_history_pet_fkey ON pet_disease_history (pet_id);
@@ -94,7 +91,6 @@ CREATE TABLE pet_vaccination_history (
     comment          TEXT,
     vaccinated_on    DATE NOT NULL,
     created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    created_by       UUID NOT NULL REFERENCES accounts (id),
     pet_id           UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
 CREATE INDEX pet_vaccination_history_pet_fkey ON pet_vaccination_history (pet_id);
