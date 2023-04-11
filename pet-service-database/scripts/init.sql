@@ -50,9 +50,9 @@ CREATE TABLE pets (
     pet_category_id INTEGER REFERENCES pet_categories (id) ON DELETE SET NULL,
     species_id      INTEGER REFERENCES species (id) ON DELETE SET NULL,
     family_id       UUID REFERENCES families (id) ON DELETE SET NULL,
-    owner_id        UUID NOT NULL REFERENCES accounts (id)
+    created_by      UUID NOT NULL REFERENCES accounts (id)
 );
-CREATE INDEX pets_owner_fkey ON pets (owner_id);
+CREATE INDEX pets_created_by_fkey ON pets (created_by);
 CREATE INDEX pets_family_fkey ON pets (family_id);
 
 CREATE TABLE pet_features (
@@ -112,7 +112,7 @@ BEGIN
         UNION
         SELECT p.*
         FROM pets AS p
-        WHERE p.owner_id = $1;
+        WHERE p.created_by = $1;
 END;
 $$ LANGUAGE PLPGSQL;
 
@@ -124,7 +124,7 @@ BEGIN
     RETURN EXISTS(SELECT 1
                   FROM pets AS p
                   WHERE p.id = $1
-                    AND p.owner_id = $2) OR
+                    AND p.created_by = $2) OR
            EXISTS(SELECT 1
                   FROM pets AS p
                            INNER JOIN user_families AS uf ON p.family_id = uf.family_id
