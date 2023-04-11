@@ -65,7 +65,7 @@ CREATE TABLE pet_features (
 );
 CREATE INDEX pet_features_pet_fkey ON pet_features (pet_id);
 
-CREATE TABLE anthropometry_history (
+CREATE TABLE pet_anthropometry_history (
     id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     height     DOUBLE PRECISION NOT NULL,
     weight     DOUBLE PRECISION NOT NULL,
@@ -74,9 +74,9 @@ CREATE TABLE anthropometry_history (
     created_by UUID NOT NULL REFERENCES accounts (id),
     pet_id     UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
-CREATE INDEX anthropometry_history_pet_fkey ON anthropometry_history (pet_id);
+CREATE INDEX pet_anthropometry_history_pet_fkey ON pet_anthropometry_history (pet_id);
 
-CREATE TABLE disease_history (
+CREATE TABLE pet_disease_history (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     disease_name TEXT NOT NULL,
     comment      TEXT,
@@ -86,9 +86,9 @@ CREATE TABLE disease_history (
     created_by   UUID NOT NULL REFERENCES accounts (id),
     pet_id       UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
-CREATE INDEX disease_history_pet_fkey ON disease_history (pet_id);
+CREATE INDEX pet_disease_history_pet_fkey ON pet_disease_history (pet_id);
 
-CREATE TABLE vaccination_history (
+CREATE TABLE pet_vaccination_history (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vaccination_name TEXT NOT NULL,
     comment          TEXT,
@@ -97,7 +97,7 @@ CREATE TABLE vaccination_history (
     created_by       UUID NOT NULL REFERENCES accounts (id),
     pet_id           UUID NOT NULL REFERENCES pets (id) ON DELETE CASCADE
 );
-CREATE INDEX vaccination_history_pet_fkey ON vaccination_history (pet_id);
+CREATE INDEX pet_vaccination_history_pet_fkey ON pet_vaccination_history (pet_id);
 
 CREATE FUNCTION find_all_pets_associated_with_user(user_id UUID)
     RETURNS SETOF pets
