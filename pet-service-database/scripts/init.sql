@@ -99,7 +99,7 @@ CREATE TABLE vaccination_history (
 );
 CREATE INDEX vaccination_history_pet_fkey ON vaccination_history (pet_id);
 
-CREATE OR REPLACE FUNCTION find_all_pets_related_to_user(user_id UUID)
+CREATE FUNCTION find_all_pets_associated_with_user(user_id UUID)
     RETURNS SETOF pets
 AS
 $$
@@ -113,6 +113,23 @@ BEGIN
         SELECT p.*
         FROM pets AS p
         WHERE p.owner_id = $1;
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE OR REPLACE FUNCTION pet_is_associated_with_user(pet_id UUID, user_id UUID)
+    RETURNS BOOLEAN
+AS
+$$
+BEGIN
+    RETURN EXISTS(SELECT 1
+                  FROM pets AS p
+                  WHERE p.id = $1
+                    AND p.owner_id = $2) OR
+           EXISTS(SELECT 1
+                  FROM pets AS p
+                           INNER JOIN user_families AS uf ON p.family_id = uf.family_id
+                  WHERE p.id = $1
+                    AND uf.user_id = $2);
 END;
 $$ LANGUAGE PLPGSQL;
 
