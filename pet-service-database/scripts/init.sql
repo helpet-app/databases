@@ -40,17 +40,17 @@ CREATE TYPE gender AS ENUM ('BOY', 'GIRL');
 CREATE CAST (VARCHAR AS gender) WITH INOUT AS IMPLICIT;
 
 CREATE TABLE pets (
-    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name            TEXT NOT NULL,
-    avatar_url      TEXT,
-    gender          gender,
-    date_of_birth   DATE,
-    is_sterilized   BOOLEAN,
-    chip_number     TEXT,
-    pet_category_id INTEGER REFERENCES pet_categories (id) ON DELETE SET NULL,
-    species_id      INTEGER REFERENCES species (id) ON DELETE SET NULL,
-    family_id       UUID REFERENCES families (id) ON DELETE SET NULL,
-    created_by      UUID NOT NULL REFERENCES accounts (id)
+    id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name                  TEXT NOT NULL,
+    avatar_url            TEXT,
+    gender                gender,
+    date_of_birth         DATE,
+    is_spayed_or_neutered BOOLEAN,
+    chip_number           TEXT,
+    pet_category_id       INTEGER REFERENCES pet_categories (id) ON DELETE SET NULL,
+    species_id            INTEGER REFERENCES species (id) ON DELETE SET NULL,
+    family_id             UUID REFERENCES families (id) ON DELETE SET NULL,
+    created_by            UUID NOT NULL REFERENCES accounts (id)
 );
 CREATE INDEX pets_created_by_fkey ON pets (created_by);
 CREATE INDEX pets_family_fkey ON pets (family_id);
@@ -96,17 +96,18 @@ CREATE TABLE pet_vaccination_history (
 CREATE INDEX pet_vaccination_history_pet_fkey ON pet_vaccination_history (pet_id);
 
 CREATE FUNCTION find_all_pets_associated_with_user(user_id UUID)
-    RETURNS SETOF pets
+    RETURNS SETOF UUID
 AS
 $$
 BEGIN
     RETURN QUERY
-        SELECT p.*
+        SELECT p.id
         FROM pets AS p
                  INNER JOIN user_families AS uf ON p.family_id = uf.family_id
         WHERE uf.user_id = $1
+        GROUP BY p.id
         UNION
-        SELECT p.*
+        SELECT p.id
         FROM pets AS p
         WHERE p.created_by = $1;
 END;
@@ -126,6 +127,23 @@ BEGIN
                            INNER JOIN user_families AS uf ON p.family_id = uf.family_id
                   WHERE p.id = $1
                     AND uf.user_id = $2);
+END;
+$$ LANGUAGE PLPGSQL;
+
+CREATE FUNCTION find_all_family_members_associated_with_user(user_id UUID)
+    RETURNS SETOF UUID
+AS
+$$
+BEGIN
+    RETURN QUERY
+        WITH u_families AS (SELECT uf.family_id
+                            FROM user_families AS uf
+                            WHERE uf.user_id = $1)
+        SELECT uf.user_id
+        FROM user_families AS uf,
+             u_families
+        WHERE uf.family_id = u_families.family_id
+        GROUP BY uf.user_id;
 END;
 $$ LANGUAGE PLPGSQL;
 
