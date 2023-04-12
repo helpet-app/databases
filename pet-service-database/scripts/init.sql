@@ -113,7 +113,7 @@ BEGIN
 END;
 $$ LANGUAGE PLPGSQL;
 
-CREATE OR REPLACE FUNCTION pet_is_associated_with_user(pet_id UUID, user_id UUID)
+CREATE FUNCTION pet_is_associated_with_user(pet_id UUID, user_id UUID)
     RETURNS BOOLEAN
 AS
 $$
