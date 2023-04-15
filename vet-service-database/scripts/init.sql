@@ -71,6 +71,10 @@ CREATE TABLE vet_schedule (
 );
 CREATE INDEX vet_schedule_vet_fkey ON vet_schedule (vet_id);
 
+ALTER SYSTEM SET wal_level = logical;
+
+CREATE PUBLICATION vets_publication FOR TABLE vets (account_id, name, avatar_url, available), time_slots, vet_schedule WITH (PUBLISH = 'INSERT,UPDATE,DELETE,TRUNCATE');
+
 CREATE OR REPLACE FUNCTION find_all_vets_by_filter(
     tag_ids UUID[]
 )
