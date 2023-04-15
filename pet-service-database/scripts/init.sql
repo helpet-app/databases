@@ -55,6 +55,10 @@ CREATE TABLE pets (
 CREATE INDEX pets_created_by_fkey ON pets (created_by);
 CREATE INDEX pets_family_fkey ON pets (family_id);
 
+ALTER SYSTEM SET wal_level = logical;
+
+CREATE PUBLICATION pets_publication FOR TABLE pets (id, name, avatar_url, family_id, created_by), user_families WITH (PUBLISH = 'INSERT,UPDATE,DELETE,TRUNCATE');
+
 CREATE TABLE pet_features (
     id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name        TEXT NOT NULL,
